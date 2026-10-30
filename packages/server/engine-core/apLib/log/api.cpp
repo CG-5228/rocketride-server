@@ -56,25 +56,25 @@ application::Opt Trace{"--trace", plat::IsDebug ? "Dev" : ""};
 // 	--log.dateTimeFormat="%m/%d/%y"
 static application::Opt DateTimeFormat{"--log.dateTimeFormat"};
 static application::Opt DecorationColor{"--log.decorationColor"};
-static application::Opt DisableAllColors{"--log.disableAllColors"};
-static application::Opt ForceDecoration{"--log.forceDecoration"};
-static application::Opt IncludeDateTime{"--log.includeDateTime"};
-static application::Opt IncludeDiskLoad{"--log.includeDiskLoad"};
-static application::Opt IncludeFile{"--log.includeFile"};
-static application::Opt IncludeFunction{"--log.includeFunction"};
-static application::Opt IncludeMemory{"--log.includeMemory"};
-static application::Opt IncludeThreadId{"--log.includeThreadId"};
-static application::Opt IncludeThreadName{"--log.includeThreadName"};
-static application::Opt IsAtty{"--log.isAtty"};
+static application::Switch DisableAllColors{"--log.disableAllColors"};
+static application::Switch ForceDecoration{"--log.forceDecoration"};
+static application::Switch IncludeDateTime{"--log.includeDateTime"};
+static application::Switch IncludeDiskLoad{"--log.includeDiskLoad"};
+static application::Switch IncludeFile{"--log.includeFile"};
+static application::Switch IncludeFunction{"--log.includeFunction"};
+static application::Switch IncludeMemory{"--log.includeMemory"};
+static application::Switch IncludeThreadId{"--log.includeThreadId"};
+static application::Switch IncludeThreadName{"--log.includeThreadName"};
+static application::Switch IsAtty{"--log.isAtty"};
 static application::Opt LogFile{"--log.file"};
-static application::Opt LogTruncate{"--log.truncate", "0"};
+static application::Switch LogTruncate{"--log.truncate", "0"};
 
 // Initializes the log subsystem
 void init() noexcept {
     // Log to file if indicated
     if (LogFile) {
         file::Path logPath = *LogFile;
-        const auto truncateLogFile = _fs<bool>(*LogTruncate);
+        const auto truncateLogFile = LogTruncate.enabled();
 
         FILE *logFile = nullptr;
 #if ROCKETRIDE_PLAT_WIN
@@ -93,34 +93,32 @@ void init() noexcept {
     }
 
     // Allow manual specification of whether stdout is a terminal
-    if (IsAtty)
-        options().isAtty = _fs<bool>(*IsAtty);
-    else
-        options().isAtty = ::IsAtty(FileNo(options().logFile));
+    options().isAtty = IsAtty.enabled(::IsAtty(FileNo(options().logFile)));
 
     // Disable colors if stdout is not a terminal
     if (!options().isAtty)
         options().disableAllColors = true;
-    else if (DisableAllColors)
-        options().disableAllColors = _fs<bool>(*DisableAllColors);
+    else
+        options().disableAllColors =
+            DisableAllColors.enabled(options().disableAllColors);
 
     if (DateTimeFormat) options().dateTimeFormat = _fs<Text>(*DateTimeFormat);
     if (DecorationColor)
         options().decorationColor = _fs<Color>(*DecorationColor);
-    if (ForceDecoration)
-        options().forceDecoration = _fs<bool>(*ForceDecoration);
-    if (IncludeDateTime)
-        options().includeDateTime = _fs<bool>(*IncludeDateTime);
-    if (IncludeDiskLoad)
-        options().includeDiskLoad = _fs<bool>(*IncludeDiskLoad);
-    if (IncludeFile) options().includeFile = _fs<bool>(*IncludeFile);
-    if (IncludeFunction)
-        options().includeFunction = _fs<bool>(*IncludeFunction);
-    if (IncludeMemory) options().includeMemory = _fs<bool>(*IncludeMemory);
-    if (IncludeThreadId)
-        options().includeThreadId = _fs<bool>(*IncludeThreadId);
-    if (IncludeThreadName)
-        options().includeThreadName = _fs<bool>(*IncludeThreadName);
+    options().forceDecoration =
+        ForceDecoration.enabled(options().forceDecoration);
+    options().includeDateTime =
+        IncludeDateTime.enabled(options().includeDateTime);
+    options().includeDiskLoad =
+        IncludeDiskLoad.enabled(options().includeDiskLoad);
+    options().includeFile = IncludeFile.enabled(options().includeFile);
+    options().includeFunction =
+        IncludeFunction.enabled(options().includeFunction);
+    options().includeMemory = IncludeMemory.enabled(options().includeMemory);
+    options().includeThreadId =
+        IncludeThreadId.enabled(options().includeThreadId);
+    options().includeThreadName =
+        IncludeThreadName.enabled(options().includeThreadName);
 
     // Turn them on as sticky levels
     if (auto ccode = log::enableLevel<true>(Trace))

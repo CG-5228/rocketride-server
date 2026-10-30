@@ -37,6 +37,50 @@ Options &Options::get() noexcept {
     return options;
 }
 
+//-------------------------------------------------------------------------
+/// @details
+///		Checks the value of every switch, so that a value which is not an
+///		on/off word stops the engine instead of reading as on or off
+///	@returns
+///		The first switch's error; each one is logged
+//-------------------------------------------------------------------------
+Error Options::check() const noexcept {
+    Error ccode;
+    for (auto &opt : m_opts) {
+        auto &val = opt.get().val();
+        if (!opt.get().isSwitch() || !val || Switch::parse(val))
+            continue;
+
+        auto err =
+            APERRL(Always, Ec::InvalidParam, _ts(opt.get().key(), "=", val),
+                   "is not an on/off value: use true, false, yes, no, "
+                   "on, off, 1 or 0");
+        if (!ccode)
+            ccode = _mv(err);
+    }
+    return ccode;
+}
+
+Switch::Switch(TextView key, TextView def) noexcept : Opt(key, def) {
+    m_switch = true;
+}
+
+ap::Opt<bool> Switch::parse(TextView value) noexcept {
+    for (TextView word : {"true", "yes", "on", "1"}) {
+        if (string::equals(value, word, false))
+            return true;
+    }
+    for (TextView word : {"false", "no", "off", "0"}) {
+        if (string::equals(value, word, false))
+            return false;
+    }
+    return {};
+}
+
+bool Switch::enabled(bool unset) const noexcept {
+    return parse(val()).value_or(unset);
+}
+
 
 // Exit quickly without deconstructing globals
 void quickExit(int code) noexcept {

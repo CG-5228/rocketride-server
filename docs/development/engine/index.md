@@ -56,6 +56,8 @@ Reads JSON task configuration from stdin for interactive or debugger-driven exec
 
 ## Command-Line Options
 
+An on/off option (`--stream`, `--autoterm`, `--args`, `--java`, `--python`, `--tika`, `--version`, `--engine_help`, and the `--log.*` options below other than `--log.file` and `--log.dateTimeFormat`) is on when given bare. Given a value, it takes `true`, `yes`, `on` or `1` for on and `false`, `no`, `off` or `0` for off, in any case; with any other value the engine does not start. An empty value (`--stream=`) leaves the option at its default.
+
 ### Core Control
 
 | Option       | Description                                  |

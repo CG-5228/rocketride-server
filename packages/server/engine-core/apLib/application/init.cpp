@@ -3,6 +3,9 @@
 namespace ap::application {
 ap::FormatOptions options;
 
+static Switch EngineHelp{"--engine_help"};
+static Switch Version{"--version"};
+
 void banner() {
     LOGOUTPUT("-------------------------------------------------");
     LOGOUTPUT("RocketRide Data Engine");
@@ -121,10 +124,11 @@ Error init() noexcept {
     installCrashHandlers();
 #endif
 
-    Options::get().init();
+    if (auto err = Options::get().init(); err && !ccode)
+        ccode = _mv(err);
 
     // If we are to output help
-    if (cmdline().option("--engine_help", true)) {
+    if (EngineHelp.enabled()) {
         banner();
         engine();
         python();
@@ -133,7 +137,7 @@ Error init() noexcept {
         quickExit();
     }
 
-    if (cmdline().option("--version", true)) {
+    if (Version.enabled()) {
         LOGOUTPUT("Version: {} hash: {} stamp: {}", projectVersion(),
                   buildHash(), buildStamp());
         quickExit();

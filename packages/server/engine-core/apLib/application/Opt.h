@@ -45,9 +45,28 @@ public:
 
     void setValue(Text value) { m_val = value; }
 
+    bool isSwitch() const noexcept { return m_switch; }
+
+protected:
+    bool m_switch = false;
+
 private:
     Text m_val;
     const TextView m_key;
+};
+
+// An on/off option: bare, true, yes, on, 1 or false, no, off, 0, in any case
+class Switch : public Opt {
+public:
+    Switch(TextView key, TextView def = {}) noexcept;
+
+    // "Is it set" is not "is it on": read a switch with enabled()
+    explicit operator bool() const noexcept = delete;
+
+    // On or off; unset when the value is empty or not one of the words
+    static ap::Opt<bool> parse(TextView value) noexcept;
+
+    bool enabled(bool unset = false) const noexcept;
 };
 
 }  // namespace ap::application

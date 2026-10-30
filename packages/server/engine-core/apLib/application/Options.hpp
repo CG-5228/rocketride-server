@@ -32,7 +32,7 @@ inline void Options::remove(Ref<Opt> opt) noexcept {
               [&](const auto &_opt) { return &_opt.get() == &opt.get(); });
 }
 
-inline void Options::init() noexcept {
+inline Error Options::init() noexcept {
     auto &cmdline = application::cmdline();
     for (auto &opt : m_opts) {
         if (auto val = cmdline.option(opt.get().key(), true, false)) {
@@ -43,6 +43,7 @@ inline void Options::init() noexcept {
                 opt.get().val() = "true";
         }
     }
+    return check();
 }
 
 }  // namespace ap::application

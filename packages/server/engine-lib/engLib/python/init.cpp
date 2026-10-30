@@ -39,7 +39,7 @@ namespace py = pybind11;
 /// @details
 ///		Option to force into python mode
 //-------------------------------------------------------------------------
-static application::Opt ExecPython{"--python"};
+static application::Switch ExecPython{"--python"};
 
 //-------------------------------------------------------------------------
 /// @details
@@ -473,7 +473,8 @@ void setupProfiler() noexcept {
 //---------------------------------------------------------------------
 bool isPython() noexcept {
     // If --python was specified, forces into python mode
-    if (ExecPython) return true;
+    if (ExecPython.enabled())
+        return true;
 
     // Get the  arguments
     auto args = application::args();

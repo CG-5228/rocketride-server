@@ -26,8 +26,8 @@
 namespace engine::java {
 class Jni;
 
-extern application::Opt ExecJava;
-extern application::Opt ExecTika;
+extern application::Switch ExecJava;
+extern application::Switch ExecTika;
 
 //-------------------------------------------------------------------------
 /// @details

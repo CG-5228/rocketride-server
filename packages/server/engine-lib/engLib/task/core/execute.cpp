@@ -33,7 +33,7 @@ static application::Opt PathsData{"--paths.data"};
 static application::Opt PathsControl{"--paths.control"};
 static application::Opt PathsCache{"--paths.cache"};
 static application::Opt PathsLog{"--paths.log"};
-static application::Opt OutputArgs{"--args"};
+static application::Switch OutputArgs{"--args"};
 
 //-------------------------------------------------------------------------
 /// @details
@@ -391,7 +391,7 @@ Error executeArguments(std::vector<Text> args) noexcept {
     Error ccode;
 
     // If we are in streaming mode
-    if (Stream) {
+    if (Stream.enabled()) {
         // Execute the task
         ccode = executeTaskString(StreamCommand);
         return ccode;
@@ -432,7 +432,7 @@ Error Main() noexcept {
     auto &cmds = application::cmdline();
 
     // If we need to output the arguments
-    if (OutputArgs) {
+    if (OutputArgs.enabled()) {
         auto args = cmds.args_original();
         LOG(Always, "Main arguments");
 

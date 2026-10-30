@@ -40,7 +40,10 @@ public:
     //-----------------------------------------------------------------
     static ROCKETRIDE_CORE_SHARED Options &get() noexcept;
 
-    void init() noexcept;
+    Error init() noexcept;
+
+    // Logs every switch whose value is not an on/off word, returns the first
+    Error check() const noexcept;
 
     friend class Opt;
 

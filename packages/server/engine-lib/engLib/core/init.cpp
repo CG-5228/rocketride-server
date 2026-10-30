@@ -30,8 +30,8 @@ using ap::file::Path;
 /// @details
 ///		This will be set if app wants to stream our command line to us
 //-------------------------------------------------------------------------
-application::Opt Stream{"--stream"};
-application::Opt AutoTerm{"--autoterm"};
+application::Switch Stream{"--stream"};
+application::Switch AutoTerm{"--autoterm"};
 
 //-------------------------------------------------------------------------
 /// @details
@@ -61,7 +61,7 @@ void deinit() noexcept {
 //-------------------------------------------------------------------------
 Error init() noexcept {
     // Read the config string from the input
-    if (Stream) {
+    if (Stream.enabled()) {
         std::getline(std::cin, StreamCommand);
     }
 
@@ -71,7 +71,7 @@ Error init() noexcept {
     // Setup stdin monitoring (always enabled)
     // When stdin closes (parent dies), exit only if --autoterm specified
     application::setStdinCloseCallback([]() {
-        if (AutoTerm) {
+        if (AutoTerm.enabled()) {
             LOG(Always, "stdin closed - immediate exit");
             application::quickExit(0);
         }

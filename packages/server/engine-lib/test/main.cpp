@@ -68,7 +68,8 @@ ErrorCode Main() {
     ::engine::monitor::MonitorType.setValue("TestConsole");
 
     // Now, reset the options based on the command line options
-    ::ap::application::Options::get().init();
+    if (auto ccode = ::ap::application::Options::get().init())
+        return ccode.code();
 
     // Init drivers
     auto ccode = engine::init();

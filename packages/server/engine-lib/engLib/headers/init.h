@@ -24,7 +24,7 @@
 #pragma once
 
 namespace engine {
-extern application::Opt Stream;
+extern application::Switch Stream;
 extern Text StreamCommand;
 
 Error init() noexcept;

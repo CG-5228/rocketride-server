@@ -88,7 +88,8 @@ ErrorCode engineTestMain() noexcept {
     ::engine::monitor::MonitorType.setValue("TestConsole");
 
     // Now, reset the options based on the command line options
-    ::ap::application::Options::get().init();
+    if (auto ccode = ::ap::application::Options::get().init())
+        return ccode.code();
 
     // Init/deinit drivers
     auto guardEngine = util::Scope{
