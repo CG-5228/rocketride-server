@@ -33,7 +33,7 @@ template <typename JsonT>
 inline void Options::__fromJson(Options &opts, const JsonT &val) noexcept {
     if (!val.isObject()) return;
 
-    opts.includeDateTime = val.lookup("decorationColor", opts.decorationColor);
+    opts.decorationColor = val.lookup("decorationColor", opts.decorationColor);
     opts.forceDecoration = val.lookup("forceDecoration", opts.forceDecoration);
     opts.includeDateTime = val.lookup("includeDateTime", opts.includeDateTime);
     opts.includeDiskLoad = val.lookup("includeDiskLoad", opts.includeDiskLoad);

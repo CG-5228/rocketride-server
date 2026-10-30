@@ -75,7 +75,7 @@ void disableAllLevels() noexcept;
 
 void disableAllStrackTraces() noexcept;
 
-void init() noexcept;
+Error init() noexcept;
 void deinit() noexcept;
 
 ROCKETRIDE_CORE_API Atomic<bool>& initialized() noexcept;

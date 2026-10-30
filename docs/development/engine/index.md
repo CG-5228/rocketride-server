@@ -56,7 +56,9 @@ Reads JSON task configuration from stdin for interactive or debugger-driven exec
 
 ## Command-Line Options
 
-An on/off option (`--stream`, `--autoterm`, `--args`, `--java`, `--python`, `--tika`, `--version`, `--engine_help`, and the `--log.*` options below other than `--log.file` and `--log.dateTimeFormat`) is on when given bare. Given a value, it takes `true`, `yes`, `on` or `1` for on and `false`, `no`, `off` or `0` for off, in any case; with any other value the engine does not start. An empty value (`--stream=`) leaves the option at its default.
+An on/off option (`--stream`, `--autoterm`, `--args`, `--java`, `--python`, `--tika`, `--version`, `--engine_help`, and the `--log.*` options below other than `--log.file`, `--log.dateTimeFormat` and `--log.decorationColor`) is on when given bare. Given a value, it takes `true`, `yes`, `on` or `1` for on and `false`, `no`, `off` or `0` for off, in any case; with any other value the engine does not start. An empty value (`--stream=`) leaves the option at its default.
+
+`--log.decorationColor` takes one of the color names in its row below, in any case; with any other name the engine does not start.
 
 ### Core Control
 
@@ -104,6 +106,7 @@ test binaries, not of the engine executable.
 | `--trace LEVELS`          | Enable trace logging (e.g. `Job`, `Service`, `All`) |
 | `--log.file PATH`         | Log to file instead of stdout                       |
 | `--log.dateTimeFormat`    | Include datetime in log output                      |
+| `--log.decorationColor`   | `Green`, `Red`, `Blue`, `Cyan`, `Yellow` or `Reset` |
 | `--log.includeDateTime`   | Include date/time in log lines                      |
 | `--log.includeThreadId`   | Include thread ID in log lines                      |
 | `--log.includeThreadName` | Include thread name in log lines                    |

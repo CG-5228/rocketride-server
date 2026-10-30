@@ -27,4 +27,18 @@ TEST_CASE("log::Colors") {
     SECTION("LOG") {
         for (auto c : Color{}) LOG(Test, c, colorName(c));
     }
+
+    SECTION("fromString takes a color name in any case") {
+        REQUIRE(*_fsc<Color>("Green") == Color::Green);
+        REQUIRE(*_fsc<Color>("red") == Color::Red);
+        REQUIRE(*_fsc<Color>("BLUE") == Color::Blue);
+        REQUIRE(*_fsc<Color>("Cyan") == Color::Cyan);
+        REQUIRE(*_fsc<Color>("yellow") == Color::Yellow);
+        REQUIRE(*_fsc<Color>("Reset") == Color::Reset);
+    }
+
+    SECTION("fromString refuses any other value") {
+        for (auto name : {"", "notacolor", "Re", "Redd", " Red", "Magenta"})
+            REQUIRE(_fsc<Color>(name).hasCcode());
+    }
 }

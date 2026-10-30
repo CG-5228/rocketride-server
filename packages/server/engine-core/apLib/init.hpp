@@ -37,7 +37,8 @@ inline auto init() noexcept {
                            LOG(Init, "Init begin");
                            async::init();
                            ccode = application::init();
-                           log::init();
+                           if (auto err = log::init(); err && !ccode)
+                               ccode = _mv(err);
                            async::work::init();
                            crypto::init();
                            plat::init();

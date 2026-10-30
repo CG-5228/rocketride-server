@@ -70,7 +70,19 @@ static application::Opt LogFile{"--log.file"};
 static application::Switch LogTruncate{"--log.truncate", "0"};
 
 // Initializes the log subsystem
-void init() noexcept {
+Error init() noexcept {
+    // Read before the log file opens, so a bad value is reported on the console
+    Error colorError;
+    if (DecorationColor) {
+        if (auto color = _fsc<Color>(*DecorationColor))
+            options().decorationColor = *color;
+        else
+            colorError = APERRL(
+                Always, Ec::InvalidParam,
+                _ts(DecorationColor.key(), "=", *DecorationColor),
+                "is not a color: use Green, Red, Blue, Cyan, Yellow or Reset");
+    }
+
     // Log to file if indicated
     if (LogFile) {
         file::Path logPath = *LogFile;
@@ -103,8 +115,6 @@ void init() noexcept {
             DisableAllColors.enabled(options().disableAllColors);
 
     if (DateTimeFormat) options().dateTimeFormat = _fs<Text>(*DateTimeFormat);
-    if (DecorationColor)
-        options().decorationColor = _fs<Color>(*DecorationColor);
     options().forceDecoration =
         ForceDecoration.enabled(options().forceDecoration);
     options().includeDateTime =
@@ -129,6 +139,8 @@ void init() noexcept {
         std::cout << Color::Reset;
         ::fflush(stdout);
     });
+
+    return colorError;
 }
 
 void deinit() noexcept {
